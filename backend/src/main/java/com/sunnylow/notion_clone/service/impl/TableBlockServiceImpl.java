@@ -1,6 +1,8 @@
 package com.sunnylow.notion_clone.service.impl;
 
 import com.sunnylow.notion_clone.dto.TableBlockDTO;
+import com.sunnylow.notion_clone.exception.EntityNotFoundException;
+import com.sunnylow.notion_clone.exception.ErrorCode;
 import com.sunnylow.notion_clone.model.Page;
 import com.sunnylow.notion_clone.model.TableBlock;
 import com.sunnylow.notion_clone.model.User;
@@ -29,9 +31,15 @@ public class TableBlockServiceImpl implements BlockService<TableBlockDTO> {
 	@Override
 	public TableBlockDTO save(TableBlockDTO dto) {
 		User user = userRepository.findById(dto.getCreatedById())
-				.orElseThrow(() -> new RuntimeException("User Not Found"));
+				.orElseThrow(() -> new EntityNotFoundException(
+						"User not found with ID = " + dto.getCreatedById(),
+						ErrorCode.USER_NOT_FOUND
+				));
 		Page page = pageRepository.findById(dto.getPageId())
-				.orElseThrow(() -> new RuntimeException("Page Not Found"));
+				.orElseThrow(() -> new EntityNotFoundException(
+						"Page not found with ID = " + dto.getPageId(),
+						ErrorCode.PAGE_NOT_FOUND
+				));
 
 		TableBlock tableBlock = TableBlockDTO.toTableBlock(dto);
 		tableBlock.setCreatedAt(LocalDate.now());
@@ -45,7 +53,10 @@ public class TableBlockServiceImpl implements BlockService<TableBlockDTO> {
 	@Override
 	public TableBlockDTO update(Integer id, TableBlockDTO dto) {
 		TableBlock tableBlock = tableRepository.findById(id)
-				.orElseThrow(() -> new RuntimeException("Table Not Found"));
+				.orElseThrow(() -> new EntityNotFoundException(
+						"Table not found with ID = " + id,
+						ErrorCode.TABLE_NOT_FOUND
+				));
 
 		tableBlock.setUpdatedAt(LocalDate.now());
 		tableBlock.setTableData(dto.getTableData());
@@ -63,13 +74,19 @@ public class TableBlockServiceImpl implements BlockService<TableBlockDTO> {
 	public TableBlockDTO getById(Integer id) {
 		return tableRepository.findById(id)
 				.map(TableBlockDTO::toTableBlockDTO)
-				.orElseThrow(() -> new RuntimeException("Table Not Found"));
+				.orElseThrow(() -> new EntityNotFoundException(
+						"Table not found with ID = " + id,
+						ErrorCode.TABLE_NOT_FOUND
+				));
 	}
 
 	@Override
 	public void delete(Integer id) {
 		TableBlock tableBlock = tableRepository.findById(id)
-				.orElseThrow(() -> new RuntimeException("Table Not Found"));
+				.orElseThrow(() -> new EntityNotFoundException(
+						"Table not found with ID = " + id,
+						ErrorCode.TABLE_NOT_FOUND
+				));
 
 		tableRepository.delete(tableBlock);
 	}

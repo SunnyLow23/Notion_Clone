@@ -1,6 +1,8 @@
 package com.sunnylow.notion_clone.service.impl;
 
 import com.sunnylow.notion_clone.dto.TextBlockDTO;
+import com.sunnylow.notion_clone.exception.EntityNotFoundException;
+import com.sunnylow.notion_clone.exception.ErrorCode;
 import com.sunnylow.notion_clone.model.Page;
 import com.sunnylow.notion_clone.model.TextBlock;
 import com.sunnylow.notion_clone.model.User;
@@ -30,9 +32,15 @@ public class TextBlockServiceImpl implements BlockService<TextBlockDTO> {
 	@Override
 	public TextBlockDTO save(TextBlockDTO dto) {
 		User user = userRepository.findById(dto.getCreatedById())
-				.orElseThrow(() -> new RuntimeException("User Not Found"));
+				.orElseThrow(() -> new EntityNotFoundException(
+						"User not found with ID = " + dto.getCreatedById(),
+						ErrorCode.USER_NOT_FOUND
+				));
 		Page page = pageRepository.findById(dto.getPageId())
-				.orElseThrow(() -> new RuntimeException("Page Not Found"));
+				.orElseThrow(() -> new EntityNotFoundException(
+						"Page not found with ID = " + dto.getPageId(),
+						ErrorCode.PAGE_NOT_FOUND
+				));
 
 		TextBlock textBlock = TextBlockDTO.toTextBlock(dto);
 		textBlock.setCreatedAt(LocalDate.now());
@@ -46,7 +54,10 @@ public class TextBlockServiceImpl implements BlockService<TextBlockDTO> {
 	@Override
 	public TextBlockDTO update(Integer id, TextBlockDTO dto) {
 		TextBlock textBlock = textRepository.findById(id)
-				.orElseThrow(() -> new RuntimeException("Text Block Not Found"));
+				.orElseThrow(() -> new EntityNotFoundException(
+						"Text Block not found with ID = " + id,
+						ErrorCode.TEXT_NOT_FOUND
+				));
 
 		textBlock.setUpdatedAt(LocalDate.now());
 		textBlock.setContent(dto.getContent());
@@ -64,13 +75,19 @@ public class TextBlockServiceImpl implements BlockService<TextBlockDTO> {
 	public TextBlockDTO getById(Integer id) {
 		return textRepository.findById(id)
 				.map(TextBlockDTO::toTextBlockDTO)
-				.orElseThrow(() -> new RuntimeException("Text Block Not Found"));
+				.orElseThrow(() -> new EntityNotFoundException(
+						"Text Block not found with ID = " + id,
+						ErrorCode.TEXT_NOT_FOUND
+				));
 	}
 
 	@Override
 	public void delete(Integer id) {
 		TextBlock textBlock = textRepository.findById(id)
-				.orElseThrow(() -> new RuntimeException("Text Block Not Found"));
+				.orElseThrow(() -> new EntityNotFoundException(
+						"Text Block not found with ID = " + id,
+						ErrorCode.TEXT_NOT_FOUND
+				));
 
 		textRepository.delete(textBlock);
 	}

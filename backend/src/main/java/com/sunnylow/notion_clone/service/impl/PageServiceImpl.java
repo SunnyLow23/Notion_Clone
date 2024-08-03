@@ -1,6 +1,9 @@
 package com.sunnylow.notion_clone.service.impl;
 
 import com.sunnylow.notion_clone.dto.PageDTO;
+import com.sunnylow.notion_clone.exception.EntityNotFoundException;
+import com.sunnylow.notion_clone.exception.ErrorCode;
+import com.sunnylow.notion_clone.exception.InvalidEntityException;
 import com.sunnylow.notion_clone.model.Page;
 import com.sunnylow.notion_clone.model.Tag;
 import com.sunnylow.notion_clone.model.User;
@@ -9,6 +12,8 @@ import com.sunnylow.notion_clone.repository.PageRepository;
 import com.sunnylow.notion_clone.repository.UserRepository;
 import com.sunnylow.notion_clone.repository.WorkspaceRepository;
 import com.sunnylow.notion_clone.service.PageService;
+import com.sunnylow.notion_clone.validator.PageValidator;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +22,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class PageServiceImpl implements PageService {
 
 	@Autowired
@@ -30,10 +36,26 @@ public class PageServiceImpl implements PageService {
 
 	@Override
 	public PageDTO save(PageDTO dto) {
+		List<String> errors = PageValidator.validatePage(dto);
+		if (!errors.isEmpty()) {
+			log.error(errors.toString());
+			throw new InvalidEntityException(
+					"Page is not valid",
+					ErrorCode.PAGE_NOT_VALID,
+					errors
+			);
+		}
+
 		User user = userRepository.findById(dto.getAuthorId())
-				.orElseThrow(() -> new RuntimeException("User Not Found"));
+				.orElseThrow(() -> new EntityNotFoundException(
+						"User not found with ID = " + dto.getAuthorId(),
+						ErrorCode.USER_NOT_FOUND
+				));
 		Workspace workspace = workspaceRepository.findById(dto.getWorkspaceId())
-				.orElseThrow(() -> new RuntimeException("Workspace Not Found"));
+				.orElseThrow(() -> new EntityNotFoundException(
+						"Workspace not found with ID = " + dto.getWorkspaceId(),
+						ErrorCode.WORKSPACE_NOT_FOUND
+				));
 
 		Page page = PageDTO.toPage(dto);
 		page.setWorkspace(workspace);
@@ -46,8 +68,21 @@ public class PageServiceImpl implements PageService {
 
 	@Override
 	public PageDTO update(Integer id, PageDTO dto) {
+		List<String> errors = PageValidator.validatePage(dto);
+		if (!errors.isEmpty()) {
+			log.error(errors.toString());
+			throw new InvalidEntityException(
+					"Page is not valid",
+					ErrorCode.PAGE_NOT_VALID,
+					errors
+			);
+		}
+
 		Page page = pageRepository.findById(id)
-				.orElseThrow(() -> new RuntimeException("Page Not Found"));
+				.orElseThrow(() -> new EntityNotFoundException("" +
+						"Page not found with ID = " + id,
+						ErrorCode.PAGE_NOT_FOUND
+				));
 
 		page.setTitle(dto.getTitle());
 		page.setUpdatedAt(LocalDate.now());
@@ -65,7 +100,10 @@ public class PageServiceImpl implements PageService {
 	public PageDTO getById(Integer id) {
 		return pageRepository.findById(id)
 				.map(PageDTO::toPageDTO)
-				.orElseThrow(() -> new RuntimeException("Page Not Found"));
+				.orElseThrow(() -> new EntityNotFoundException("" +
+						"Page not found with ID = " + id,
+						ErrorCode.PAGE_NOT_FOUND
+				));
 	}
 
 	@Override
@@ -89,7 +127,10 @@ public class PageServiceImpl implements PageService {
 	@Override
 	public void delete(Integer id) {
 		Page page = pageRepository.findById(id)
-				.orElseThrow(() -> new RuntimeException("Page Not Found"));
+				.orElseThrow(() -> new EntityNotFoundException("" +
+						"Page not found with ID = " + id,
+						ErrorCode.PAGE_NOT_FOUND
+				));
 
 		for (Tag tag : page.getTags()) {
 			tag.getPages().remove(page);

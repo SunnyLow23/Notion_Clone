@@ -1,6 +1,8 @@
 package com.sunnylow.notion_clone.service.impl;
 
 import com.sunnylow.notion_clone.dto.TodoBlockDTO;
+import com.sunnylow.notion_clone.exception.EntityNotFoundException;
+import com.sunnylow.notion_clone.exception.ErrorCode;
 import com.sunnylow.notion_clone.model.Page;
 import com.sunnylow.notion_clone.model.TodoBlock;
 import com.sunnylow.notion_clone.model.User;
@@ -30,9 +32,15 @@ public class TodoBlockServiceImpl implements BlockService<TodoBlockDTO> {
 	@Override
 	public TodoBlockDTO save(TodoBlockDTO dto) {
 		User user = userRepository.findById(dto.getCreatedById())
-				.orElseThrow(() -> new RuntimeException("User Not Found"));
+				.orElseThrow(() -> new EntityNotFoundException(
+						"User not found with ID = " + dto.getCreatedById(),
+						ErrorCode.USER_NOT_FOUND
+				));
 		Page page = pageRepository.findById(dto.getPageId())
-				.orElseThrow(() -> new RuntimeException("Page Not Found"));
+				.orElseThrow(() -> new EntityNotFoundException(
+						"Page not found with ID = " + dto.getPageId(),
+						ErrorCode.PAGE_NOT_FOUND
+				));
 
 		TodoBlock todoBlock = TodoBlockDTO.toTodoBlock(dto);
 		todoBlock.setCreatedAt(LocalDate.now());
@@ -46,7 +54,10 @@ public class TodoBlockServiceImpl implements BlockService<TodoBlockDTO> {
 	@Override
 	public TodoBlockDTO update(Integer id, TodoBlockDTO dto) {
 		TodoBlock todoBlock = todoRepository.findById(id)
-				.orElseThrow(() -> new RuntimeException("Todo Not Found"));
+				.orElseThrow(() -> new EntityNotFoundException(
+						"Todo Block not found with ID = " + id,
+						ErrorCode.TODO_NOT_FOUND
+				));
 
 		todoBlock.setUpdatedAt(LocalDate.now());
 		todoBlock.setContent(dto.getContent());
@@ -66,13 +77,19 @@ public class TodoBlockServiceImpl implements BlockService<TodoBlockDTO> {
 	public TodoBlockDTO getById(Integer id) {
 		return todoRepository.findById(id)
 				.map(TodoBlockDTO::toTodoBlockDTO)
-				.orElseThrow(() -> new RuntimeException("Todo Not Found"));
+				.orElseThrow(() -> new EntityNotFoundException(
+						"Todo Block not found with ID = " + id,
+						ErrorCode.TODO_NOT_FOUND
+				));
 	}
 
 	@Override
 	public void delete(Integer id) {
 		TodoBlock todoBlock = todoRepository.findById(id)
-				.orElseThrow(() -> new RuntimeException("Todo Not Found"));
+				.orElseThrow(() -> new EntityNotFoundException(
+						"Todo Block not found with ID = " + id,
+						ErrorCode.TODO_NOT_FOUND
+				));
 
 		todoRepository.delete(todoBlock);
 	}

@@ -1,6 +1,8 @@
 package com.sunnylow.notion_clone.service.impl;
 
 import com.sunnylow.notion_clone.dto.ImageBlockDTO;
+import com.sunnylow.notion_clone.exception.EntityNotFoundException;
+import com.sunnylow.notion_clone.exception.ErrorCode;
 import com.sunnylow.notion_clone.model.ImageBlock;
 import com.sunnylow.notion_clone.model.Page;
 import com.sunnylow.notion_clone.model.User;
@@ -30,9 +32,15 @@ public class ImageBlockServiceImpl implements BlockService<ImageBlockDTO> {
 	@Override
 	public ImageBlockDTO save(ImageBlockDTO dto) {
 		User user = userRepository.findById(dto.getCreatedById())
-				.orElseThrow(() -> new RuntimeException("User Not Found"));
+				.orElseThrow(() -> new EntityNotFoundException(
+						"User not found with ID = " + dto.getCreatedById(),
+						ErrorCode.USER_NOT_FOUND
+				));
 		Page page = pageRepository.findById(dto.getPageId())
-				.orElseThrow(() -> new RuntimeException("Page Not Found"));
+				.orElseThrow(() -> new EntityNotFoundException(
+						"Page not found with ID = " + dto.getPageId(),
+						ErrorCode.PAGE_NOT_FOUND
+				));
 
 		ImageBlock imageBlock = ImageBlockDTO.toImageBlock(dto);
 		imageBlock.setCreatedAt(LocalDate.now());
@@ -46,7 +54,10 @@ public class ImageBlockServiceImpl implements BlockService<ImageBlockDTO> {
 	@Override
 	public ImageBlockDTO update(Integer id, ImageBlockDTO dto) {
 		ImageBlock imageBlock = imageRepository.findById(id)
-				.orElseThrow(() -> new RuntimeException("Image Not Found"));
+				.orElseThrow(() -> new EntityNotFoundException(
+						"Image Block not found with ID = " + id,
+						ErrorCode.IMAGE_NOT_FOUND
+				));
 
 		imageBlock.setUpdatedAt(LocalDate.now());
 		imageBlock.setImageUrl(dto.getImageUrl());
@@ -65,13 +76,19 @@ public class ImageBlockServiceImpl implements BlockService<ImageBlockDTO> {
 	public ImageBlockDTO getById(Integer id) {
 		return imageRepository.findById(id)
 				.map(ImageBlockDTO::toImageBlockDTO)
-				.orElseThrow(() -> new RuntimeException("Image Not Found"));
+				.orElseThrow(() -> new EntityNotFoundException(
+						"Image Block not found with ID = " + id,
+						ErrorCode.IMAGE_NOT_FOUND
+				));
 	}
 
 	@Override
 	public void delete(Integer id) {
 		ImageBlock imageBlock = imageRepository.findById(id)
-				.orElseThrow(() -> new RuntimeException("Image Not Found"));
+				.orElseThrow(() -> new EntityNotFoundException(
+						"Image Block not found with ID = " + id,
+						ErrorCode.IMAGE_NOT_FOUND
+				));
 
 		imageRepository.delete(imageBlock);
 	}

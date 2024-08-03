@@ -1,6 +1,8 @@
 package com.sunnylow.notion_clone.service.impl;
 
 import com.sunnylow.notion_clone.dto.JournalBlockDTO;
+import com.sunnylow.notion_clone.exception.EntityNotFoundException;
+import com.sunnylow.notion_clone.exception.ErrorCode;
 import com.sunnylow.notion_clone.model.JournalBlock;
 import com.sunnylow.notion_clone.model.Page;
 import com.sunnylow.notion_clone.model.User;
@@ -30,9 +32,15 @@ public class JournalBlockServiceImpl implements BlockService<JournalBlockDTO> {
 	@Override
 	public JournalBlockDTO save(JournalBlockDTO dto) {
 		User user = userRepository.findById(dto.getCreatedById())
-				.orElseThrow(() -> new RuntimeException("User Not Found"));
+				.orElseThrow(() -> new EntityNotFoundException(
+						"User not found with ID = " + dto.getCreatedById(),
+						ErrorCode.USER_NOT_FOUND
+				));
 		Page page = pageRepository.findById(dto.getPageId())
-				.orElseThrow(() -> new RuntimeException("Page Not Found"));
+				.orElseThrow(() -> new EntityNotFoundException(
+						"Page not found with ID = " + dto.getPageId(),
+						ErrorCode.PAGE_NOT_FOUND
+				));
 
 		JournalBlock journalBlock = JournalBlockDTO.toJournalBlock(dto);
 		journalBlock.setCreatedAt(LocalDate.now());
@@ -46,7 +54,10 @@ public class JournalBlockServiceImpl implements BlockService<JournalBlockDTO> {
 	@Override
 	public JournalBlockDTO update(Integer id, JournalBlockDTO dto) {
 		JournalBlock journalBlock = journalRepository.findById(id)
-				.orElseThrow(() -> new RuntimeException("JournalBlock Not Found"));
+				.orElseThrow(() -> new EntityNotFoundException(
+						"Journal Block not found with ID = " + id,
+						ErrorCode.JOURNAL_NOT_FOUND
+				));
 
 		journalBlock.setUpdatedAt(LocalDate.now());
 		journalBlock.setJournalDate(dto.getJournalDate());
@@ -65,13 +76,19 @@ public class JournalBlockServiceImpl implements BlockService<JournalBlockDTO> {
 	public JournalBlockDTO getById(Integer id) {
 		return journalRepository.findById(id)
 				.map(JournalBlockDTO::toJournalBlockDTO)
-				.orElseThrow(() -> new RuntimeException("JournalBlock Not Found"));
+				.orElseThrow(() -> new EntityNotFoundException(
+						"Journal Block not found with ID = " + id,
+						ErrorCode.JOURNAL_NOT_FOUND
+				));
 	}
 
 	@Override
 	public void delete(Integer id) {
 		JournalBlock journalBlock = journalRepository.findById(id)
-				.orElseThrow(() -> new RuntimeException("JournalBlock Not Found"));
+				.orElseThrow(() -> new EntityNotFoundException(
+						"Journal Block not found with ID = " + id,
+						ErrorCode.JOURNAL_NOT_FOUND
+				));
 
 		journalRepository.delete(journalBlock);
 	}

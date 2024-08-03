@@ -16,7 +16,7 @@ public class TagDTO {
 	private TagColor color;
 	private LocalDate createdAt;
 	private LocalDate updatedAt;
-	private Integer createdBy;
+	private Integer createdById;
 
 	public static Tag toTag(TagDTO dto) {
 		final Tag tag = new Tag();
@@ -36,7 +36,7 @@ public class TagDTO {
 				.color(tag.getColor())
 				.createdAt(tag.getCreatedAt())
 				.updatedAt(tag.getUpdatedAt())
-				.createdBy(tag.getCreatedBy().getId())
+				.createdById(tag.getCreatedBy().getId())
 				.build();
 	}
 }

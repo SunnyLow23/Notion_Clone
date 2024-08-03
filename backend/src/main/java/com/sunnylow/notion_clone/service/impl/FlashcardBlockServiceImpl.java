@@ -1,6 +1,8 @@
 package com.sunnylow.notion_clone.service.impl;
 
 import com.sunnylow.notion_clone.dto.FlashcardBlockDTO;
+import com.sunnylow.notion_clone.exception.EntityNotFoundException;
+import com.sunnylow.notion_clone.exception.ErrorCode;
 import com.sunnylow.notion_clone.model.FlashcardBlock;
 import com.sunnylow.notion_clone.model.Page;
 import com.sunnylow.notion_clone.model.User;
@@ -30,9 +32,15 @@ public class FlashcardBlockServiceImpl implements BlockService<FlashcardBlockDTO
 	@Override
 	public FlashcardBlockDTO save(FlashcardBlockDTO dto) {
 		User user = userRepository.findById(dto.getCreatedById())
-				.orElseThrow(() -> new RuntimeException("User Not Found"));
+				.orElseThrow(() -> new EntityNotFoundException(
+						"User not found with ID = " + dto.getCreatedById(),
+						ErrorCode.USER_NOT_FOUND
+				));
 		Page page = pageRepository.findById(dto.getPageId())
-				.orElseThrow(() -> new RuntimeException("Page Not Found"));
+				.orElseThrow(() -> new EntityNotFoundException(
+						"Page not found with ID = " + dto.getPageId(),
+						ErrorCode.PAGE_NOT_FOUND
+				));
 
 		FlashcardBlock flashcardBlock = FlashcardBlockDTO.toFlashcardBlock(dto);
 		flashcardBlock.setCreatedAt(LocalDate.now());
@@ -46,7 +54,10 @@ public class FlashcardBlockServiceImpl implements BlockService<FlashcardBlockDTO
 	@Override
 	public FlashcardBlockDTO update(Integer id, FlashcardBlockDTO dto) {
 		FlashcardBlock flashcardBlock = flashcardRepository.findById(id)
-				.orElseThrow(() -> new RuntimeException("User Not Found"));
+				.orElseThrow(() -> new EntityNotFoundException(
+						"Flashcard Block not found with ID = " + id,
+						ErrorCode.FLASHCARD_NOT_FOUND
+				));
 
 		flashcardBlock.setUpdatedAt(LocalDate.now());
 		flashcardBlock.setQuestion(dto.getQuestion());
@@ -65,13 +76,19 @@ public class FlashcardBlockServiceImpl implements BlockService<FlashcardBlockDTO
 	public FlashcardBlockDTO getById(Integer id) {
 		return flashcardRepository.findById(id)
 				.map(FlashcardBlockDTO::toFlashcardBlockDTO)
-				.orElseThrow(() -> new RuntimeException("User Not Found"));
+				.orElseThrow(() -> new EntityNotFoundException(
+						"Flashcard Block not found with ID = " + id,
+						ErrorCode.FLASHCARD_NOT_FOUND
+				));
 	}
 
 	@Override
 	public void delete(Integer id) {
 		FlashcardBlock flashcardBlock = flashcardRepository.findById(id)
-				.orElseThrow(() -> new RuntimeException("User Not Found"));
+				.orElseThrow(() -> new EntityNotFoundException(
+						"Flashcard Block not found with ID = " + id,
+						ErrorCode.FLASHCARD_NOT_FOUND
+				));
 
 		flashcardRepository.delete(flashcardBlock);
 	}

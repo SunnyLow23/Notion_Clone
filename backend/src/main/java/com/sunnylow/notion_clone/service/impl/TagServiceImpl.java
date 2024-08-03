@@ -1,6 +1,8 @@
 package com.sunnylow.notion_clone.service.impl;
 
 import com.sunnylow.notion_clone.dto.TagDTO;
+import com.sunnylow.notion_clone.exception.EntityNotFoundException;
+import com.sunnylow.notion_clone.exception.ErrorCode;
 import com.sunnylow.notion_clone.model.Page;
 import com.sunnylow.notion_clone.model.Tag;
 import com.sunnylow.notion_clone.model.User;
@@ -25,8 +27,11 @@ public class TagServiceImpl implements TagService {
 
 	@Override
 	public TagDTO save(TagDTO dto) {
-		User createdBy = userRepository.findById(dto.getCreatedBy())
-				.orElseThrow(() -> new RuntimeException("User Not Found"));
+		User createdBy = userRepository.findById(dto.getCreatedById())
+				.orElseThrow(() -> new EntityNotFoundException(
+						"User not found with ID = " + dto.getCreatedById(),
+						ErrorCode.USER_NOT_FOUND
+				));
 
 		Tag tag = TagDTO.toTag(dto);
 
@@ -40,7 +45,10 @@ public class TagServiceImpl implements TagService {
 	@Override
 	public TagDTO update(Integer id, TagDTO dto) {
 		Tag tag = tagRepository.findById(id)
-				.orElseThrow(() -> new RuntimeException("Tag Not Found"));
+				.orElseThrow(() -> new EntityNotFoundException(
+						"Tag not found with ID = " + id,
+						ErrorCode.TAG_NOT_FOUND
+				));
 
 		tag.setName(dto.getName());
 		tag.setColor(dto.getColor());
@@ -59,13 +67,19 @@ public class TagServiceImpl implements TagService {
 	public TagDTO getById(Integer id) {
 		return tagRepository.findById(id)
 				.map(TagDTO::toTagDTO)
-				.orElseThrow(() -> new RuntimeException("Tag Not Found"));
+				.orElseThrow(() -> new EntityNotFoundException(
+						"Tag not found with ID = " + id,
+						ErrorCode.TAG_NOT_FOUND
+				));
 	}
 
 	@Override
 	public void delete(Integer id) {
 		Tag tag = tagRepository.findById(id)
-				.orElseThrow(() -> new RuntimeException("Tag Not Found"));
+				.orElseThrow(() -> new EntityNotFoundException(
+						"Tag not found with ID = " + id,
+						ErrorCode.TAG_NOT_FOUND
+				));
 
 		for (Page page : tag.getPages()) {
 			page.getTags().remove(tag);
