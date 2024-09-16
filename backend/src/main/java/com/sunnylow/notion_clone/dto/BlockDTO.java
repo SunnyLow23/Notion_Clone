@@ -9,6 +9,7 @@ public class BlockDTO {
 
 	private Integer id;
 	private String type;
+	private Integer position;
 	private LocalDate createdAt;
 	private LocalDate updatedAt;
 	private Integer pageId;

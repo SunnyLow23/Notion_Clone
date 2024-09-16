@@ -65,6 +65,20 @@ public class TableBlockServiceImpl implements BlockService<TableBlockDTO> {
 	}
 
 	@Override
+	public TableBlockDTO updatePosition(Integer id, Integer newPosition) {
+		TableBlock tableBlock = tableRepository.findById(id)
+				.orElseThrow(() -> new EntityNotFoundException(
+						"Table not found with ID = " + id,
+						ErrorCode.TABLE_NOT_FOUND
+				));
+
+		tableBlock.setUpdatedAt(LocalDate.now());
+		tableBlock.setPosition(newPosition);
+
+		return TableBlockDTO.toTableBlockDTO(tableRepository.save(tableBlock));
+	}
+
+	@Override
 	public List<TableBlockDTO> getAll() {
 		return tableRepository.findAll().stream()
 				.map(TableBlockDTO::toTableBlockDTO).collect(Collectors.toList());
@@ -78,6 +92,12 @@ public class TableBlockServiceImpl implements BlockService<TableBlockDTO> {
 						"Table not found with ID = " + id,
 						ErrorCode.TABLE_NOT_FOUND
 				));
+	}
+
+	@Override
+	public List<TableBlockDTO> getAllByPageId(Integer pageId) {
+		return tableRepository.findTableBlocksByPageId(pageId).stream()
+				.map(TableBlockDTO::toTableBlockDTO).collect(Collectors.toList());
 	}
 
 	@Override

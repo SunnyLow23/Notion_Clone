@@ -5,7 +5,7 @@ import jakarta.persistence.Entity;
 import lombok.Data;
 
 @Entity
-@DiscriminatorValue("TEXT")
+@DiscriminatorValue("paragraph")
 @Data
 public class TextBlock extends Block {
 

@@ -12,8 +12,7 @@ public class TableBlockDTO extends BlockDTO {
 		final TableBlock block = new TableBlock();
 
 		block.setType(dto.getType());
-		block.setCreatedAt(dto.getCreatedAt());
-		block.setUpdatedAt(dto.getUpdatedAt());
+		block.setPosition(dto.getPosition());
 		block.setTableData(dto.getTableData());
 
 		return block;
@@ -24,6 +23,7 @@ public class TableBlockDTO extends BlockDTO {
 
 		dto.setId(block.getId());
 		dto.setType(block.getType());
+		dto.setPosition(block.getPosition());
 		dto.setCreatedAt(block.getCreatedAt());
 		dto.setUpdatedAt(block.getUpdatedAt());
 		dto.setPageId(block.getPage().getId());

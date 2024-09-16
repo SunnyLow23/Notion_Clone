@@ -1,6 +1,7 @@
 package com.sunnylow.notion_clone.handler;
 
 import com.sunnylow.notion_clone.dto.ErrorDTO;
+import com.sunnylow.notion_clone.exception.AppException;
 import com.sunnylow.notion_clone.exception.EntityAlreadyExistsException;
 import com.sunnylow.notion_clone.exception.EntityNotFoundException;
 import com.sunnylow.notion_clone.exception.InvalidEntityException;
@@ -55,5 +56,19 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 				.build();
 
 		return new ResponseEntity<>(errorDTO, HttpStatus.CONFLICT);
+	}
+
+	@ExceptionHandler(AppException.class)
+	public ResponseEntity<ErrorDTO> handleException(
+			AppException e,
+			WebRequest request
+	) {
+		final ErrorDTO errorDTO = ErrorDTO.builder()
+				.httpStatusCode(HttpStatus.BAD_REQUEST.value())
+				.errorCode(e.getErrorCode())
+				.message(e.getMessage())
+				.build();
+
+		return new ResponseEntity<>(errorDTO, HttpStatus.BAD_REQUEST);
 	}
 }

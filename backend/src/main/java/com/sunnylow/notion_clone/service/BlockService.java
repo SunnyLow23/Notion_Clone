@@ -3,7 +3,6 @@ package com.sunnylow.notion_clone.service;
 import com.sunnylow.notion_clone.dto.BlockDTO;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface BlockService<T extends BlockDTO> {
 
@@ -11,9 +10,13 @@ public interface BlockService<T extends BlockDTO> {
 
 	T update(Integer id, T dto);
 
+	T updatePosition(Integer id, Integer newPosition);
+
 	List<T> getAll();
 
 	T getById(Integer id);
+
+	List<T> getAllByPageId(Integer pageId);
 
 	void delete(Integer id);
 }

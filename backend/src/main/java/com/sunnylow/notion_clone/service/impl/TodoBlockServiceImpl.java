@@ -68,6 +68,20 @@ public class TodoBlockServiceImpl implements BlockService<TodoBlockDTO> {
 	}
 
 	@Override
+	public TodoBlockDTO updatePosition(Integer id, Integer newPosition) {
+		TodoBlock todoBlock = todoRepository.findById(id)
+				.orElseThrow(() -> new EntityNotFoundException(
+						"Todo Block not found with ID = " + id,
+						ErrorCode.TODO_NOT_FOUND
+				));
+
+		todoBlock.setUpdatedAt(LocalDate.now());
+		todoBlock.setPosition(newPosition);
+
+		return TodoBlockDTO.toTodoBlockDTO(todoRepository.save(todoBlock));
+	}
+
+	@Override
 	public List<TodoBlockDTO> getAll() {
 		return todoRepository.findAll().stream()
 				.map(TodoBlockDTO::toTodoBlockDTO).collect(Collectors.toList());
@@ -81,6 +95,12 @@ public class TodoBlockServiceImpl implements BlockService<TodoBlockDTO> {
 						"Todo Block not found with ID = " + id,
 						ErrorCode.TODO_NOT_FOUND
 				));
+	}
+
+	@Override
+	public List<TodoBlockDTO> getAllByPageId(Integer pageId) {
+		return todoRepository.findTodoBlocksByPageId(pageId).stream()
+				.map(TodoBlockDTO::toTodoBlockDTO).collect(Collectors.toList());
 	}
 
 	@Override

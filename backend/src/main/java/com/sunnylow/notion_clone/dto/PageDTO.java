@@ -7,11 +7,11 @@ import lombok.Data;
 import java.time.LocalDate;
 
 @Data
-@Builder
 public class PageDTO {
 
 	private Integer id;
 	private String title;
+	private String background;
 	private LocalDate createdAt;
 	private LocalDate updatedAt;
 	private Integer workspaceId;
@@ -21,6 +21,7 @@ public class PageDTO {
 		final Page page = new Page();
 
 		page.setTitle(dto.getTitle());
+		page.setBackground(dto.getBackground());
 		page.setCreatedAt(dto.getCreatedAt());
 		page.setUpdatedAt(dto.getUpdatedAt());
 
@@ -28,13 +29,16 @@ public class PageDTO {
 	}
 
 	public static PageDTO toPageDTO(Page page) {
-		return PageDTO.builder()
-				.id(page.getId())
-				.title(page.getTitle())
-				.createdAt(page.getCreatedAt())
-				.updatedAt(page.getUpdatedAt())
-				.workspaceId(page.getWorkspace().getId())
-				.authorId(page.getAuthor().getId())
-				.build();
+		final PageDTO dto = new PageDTO();
+
+		dto.setId(page.getId());
+		dto.setTitle(page.getTitle());
+		dto.setBackground(page.getBackground());
+		dto.setCreatedAt(page.getCreatedAt());
+		dto.setUpdatedAt(page.getUpdatedAt());
+		dto.setWorkspaceId(page.getWorkspace().getId());
+		dto.setAuthorId(page.getAuthor().getId());
+
+		return dto;
 	}
 }

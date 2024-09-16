@@ -5,7 +5,7 @@ import jakarta.persistence.Entity;
 import lombok.Data;
 
 @Entity
-@DiscriminatorValue("FLASHCARD")
+@DiscriminatorValue("flashcard")
 @Data
 public class FlashcardBlock extends Block {
 

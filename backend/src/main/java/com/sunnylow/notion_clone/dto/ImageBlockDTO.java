@@ -13,8 +13,7 @@ public class ImageBlockDTO extends BlockDTO {
 		final ImageBlock block = new ImageBlock();
 
 		block.setType(dto.getType());
-		block.setCreatedAt(dto.getCreatedAt());
-		block.setUpdatedAt(dto.getUpdatedAt());
+		block.setPosition(dto.getPosition());
 		block.setImageUrl(dto.getImageUrl());
 		block.setCaption(dto.getCaption());
 
@@ -26,6 +25,7 @@ public class ImageBlockDTO extends BlockDTO {
 
 		dto.setId(block.getId());
 		dto.setType(block.getType());
+		dto.setPosition(block.getPosition());
 		dto.setCreatedAt(block.getCreatedAt());
 		dto.setUpdatedAt(block.getUpdatedAt());
 		dto.setPageId(block.getPage().getId());

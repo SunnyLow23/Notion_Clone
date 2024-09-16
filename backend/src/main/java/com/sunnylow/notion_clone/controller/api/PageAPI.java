@@ -53,6 +53,25 @@ public interface PageAPI {
 			@RequestBody PageDTO dto
 	);
 
+	@PatchMapping(
+			value = "/pages/{id}/background",
+			consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE
+	)
+	@Operation(
+			summary = "Update a page",
+			description = "Update an existing page by ID"
+	)
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Page updated successfully"),
+			@ApiResponse(responseCode = "1002", description = "Page not found"),
+			@ApiResponse(responseCode = "2002", description = "Page not valid"),
+	})
+	ResponseEntity<PageDTO> updatePageBackground(
+			@PathVariable("id") Integer id,
+			@RequestBody PageDTO dto
+	);
+
 	@GetMapping(
 			value = "/pages",
 			produces = MediaType.APPLICATION_JSON_VALUE
@@ -83,7 +102,7 @@ public interface PageAPI {
 	);
 
 	@GetMapping(
-			value = "/user/{id}/pages",
+			value = "/users/{id}/pages",
 			produces = MediaType.APPLICATION_JSON_VALUE
 	)
 	@Operation(

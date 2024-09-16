@@ -7,7 +7,7 @@ import lombok.Data;
 import java.time.LocalDate;
 
 @Entity
-@DiscriminatorValue("TODO")
+@DiscriminatorValue("todo")
 @Data
 public class TodoBlock extends Block {
 

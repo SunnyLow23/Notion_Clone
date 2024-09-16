@@ -61,4 +61,31 @@ public class User {
 	)
 	@JsonManagedReference
 	private List<Block> blocks = new ArrayList<>();
+
+	@OneToMany(
+			mappedBy = "createdBy",
+			fetch = FetchType.LAZY,
+			cascade = CascadeType.ALL,
+			orphanRemoval = true
+	)
+	@JsonManagedReference
+	private List<BlockNote> blockNotes = new ArrayList<>();
+
+	@OneToMany(
+			mappedBy = "user",
+			fetch = FetchType.LAZY,
+			cascade = CascadeType.ALL,
+			orphanRemoval = true
+	)
+	@JsonManagedReference
+	private List<StaticNote> staticNotes = new ArrayList<>();
+
+	@OneToMany(
+			mappedBy = "user",
+			fetch = FetchType.LAZY,
+			cascade = CascadeType.ALL,
+			orphanRemoval = true
+	)
+	@JsonManagedReference
+	private List<SharedPage> sharedPages = new ArrayList<>();
 }

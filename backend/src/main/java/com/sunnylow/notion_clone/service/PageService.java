@@ -10,6 +10,8 @@ public interface PageService {
 
 	PageDTO update(Integer id, PageDTO pageDTO);
 
+	PageDTO updateBackground(Integer id, PageDTO dto);
+
 	List<PageDTO> getAll();
 
 	PageDTO getById(Integer id);

@@ -82,7 +82,7 @@ public interface WorkspaceAPI {
 	);
 
 	@GetMapping(
-			value = "/user/{id}/workspaces",
+			value = "/users/{id}/workspaces",
 			produces = MediaType.APPLICATION_JSON_VALUE
 	)
 	@Operation(

@@ -27,6 +27,11 @@ public class PageController implements PageAPI {
 	}
 
 	@Override
+	public ResponseEntity<PageDTO> updatePageBackground(Integer id, PageDTO dto) {
+		return new ResponseEntity<>(pageService.updateBackground(id, dto), HttpStatus.OK);
+	}
+
+	@Override
 	public ResponseEntity<List<PageDTO>> getAllPages() {
 		return new ResponseEntity<>(pageService.getAll(), HttpStatus.OK);
 	}

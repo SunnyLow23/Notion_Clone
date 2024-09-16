@@ -20,6 +20,8 @@ public class Page {
 
 	private String title;
 
+	private String background;
+
 	private LocalDate createdAt;
 
 	private LocalDate updatedAt;
@@ -54,4 +56,29 @@ public class Page {
 	)
 	@JsonManagedReference
 	private List<Block> blocks = new ArrayList<>();
+
+	@OneToMany(
+			mappedBy = "page",
+			fetch = FetchType.LAZY,
+			cascade = CascadeType.ALL,
+			orphanRemoval = true
+	)
+	@JsonManagedReference
+	private List<BlockNote> blockNotes = new ArrayList<>();
+
+	@OneToMany(
+			mappedBy = "page",
+			fetch = FetchType.LAZY,
+			cascade = CascadeType.ALL,
+			orphanRemoval = true
+	)
+	private List<SharedPage> sharedPages = new ArrayList<>();
+
+	@OneToMany(
+			mappedBy = "page",
+			fetch = FetchType.LAZY,
+			cascade = CascadeType.ALL,
+			orphanRemoval = true
+	)
+	private List<StaticNote> staticNotes = new ArrayList<>();
 }

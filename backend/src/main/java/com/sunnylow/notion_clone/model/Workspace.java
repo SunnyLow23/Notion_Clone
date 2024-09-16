@@ -24,6 +24,8 @@ public class Workspace {
 
 	private LocalDate updatedAt;
 
+	private boolean editable;
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id")
 	@JsonBackReference

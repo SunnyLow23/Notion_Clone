@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Tag(name = "JournalBlock", description = "JournalBlock management APIs")
-@RequestMapping("/api/blocks")
+@RequestMapping("/api")
 public interface JournalBlockAPI {
 
 	@PostMapping(
@@ -51,6 +51,24 @@ public interface JournalBlockAPI {
 			@RequestBody JournalBlockDTO dto
 	);
 
+	@PatchMapping(
+			value = "/journals/{id}/position",
+			produces = MediaType.APPLICATION_JSON_VALUE
+	)
+	@Operation(
+			summary = "Update block position",
+			description = "Update block position"
+	)
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "text updated successfully"),
+			@ApiResponse(responseCode = "1001", description = "text not found"),
+			@ApiResponse(responseCode = "2001", description = "text not valid"),
+	})
+	ResponseEntity<JournalBlockDTO> updatePosition(
+			@PathVariable("id") Integer id,
+			@RequestParam Integer newPosition
+	);
+
 	@GetMapping(
 			value = "/journals",
 			produces = MediaType.APPLICATION_JSON_VALUE
@@ -63,6 +81,21 @@ public interface JournalBlockAPI {
 			@ApiResponse(responseCode = "200", description = "journals retrieved successfully"),
 	})
 	ResponseEntity<List<JournalBlockDTO>> getAllJournals();
+
+	@GetMapping(
+			value = "/pages/{id}/journals",
+			produces = MediaType.APPLICATION_JSON_VALUE
+	)
+	@Operation(
+			summary = "Get all texts by page id",
+			description = "Retrieve all texts by a specific page id"
+	)
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "texts retrieved successfully"),
+	})
+	ResponseEntity<List<JournalBlockDTO>> getAllJournalsByPageId(
+			@PathVariable("id") Integer pageId
+	);
 
 	@GetMapping(
 			value = "/journals/{id}",

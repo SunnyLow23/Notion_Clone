@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -24,6 +26,8 @@ public abstract class Block {
 	)
 	private String type;
 
+	private Integer position;
+
 	private LocalDate createdAt;
 
 	private LocalDate updatedAt;
@@ -37,4 +41,17 @@ public abstract class Block {
 	@JoinColumn(name = "created_by_id")
 	@JsonBackReference
 	private User createdBy;
+
+	@ElementCollection
+	@CollectionTable(name = "block_attributes", joinColumns = @JoinColumn(name = "block_id"))
+	@MapKeyColumn(name = "attribute_key")
+	@Column(name = "attribute_value")
+	private Map<String, String> attributes;
+
+	@OneToMany(mappedBy = "parentBlock", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Block> children;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "parent_block_id")
+	private Block parentBlock;
 }

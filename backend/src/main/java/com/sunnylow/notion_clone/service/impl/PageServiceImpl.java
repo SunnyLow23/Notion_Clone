@@ -1,14 +1,13 @@
 package com.sunnylow.notion_clone.service.impl;
 
+import com.sunnylow.notion_clone.dto.BlockNoteDTO;
 import com.sunnylow.notion_clone.dto.PageDTO;
 import com.sunnylow.notion_clone.exception.EntityNotFoundException;
 import com.sunnylow.notion_clone.exception.ErrorCode;
 import com.sunnylow.notion_clone.exception.InvalidEntityException;
-import com.sunnylow.notion_clone.model.Page;
-import com.sunnylow.notion_clone.model.Tag;
-import com.sunnylow.notion_clone.model.User;
-import com.sunnylow.notion_clone.model.Workspace;
+import com.sunnylow.notion_clone.model.*;
 import com.sunnylow.notion_clone.repository.PageRepository;
+import com.sunnylow.notion_clone.repository.SharedPageRepository;
 import com.sunnylow.notion_clone.repository.UserRepository;
 import com.sunnylow.notion_clone.repository.WorkspaceRepository;
 import com.sunnylow.notion_clone.service.PageService;
@@ -33,6 +32,9 @@ public class PageServiceImpl implements PageService {
 
 	@Autowired
 	private UserRepository userRepository;
+
+	@Autowired
+	private SharedPageRepository sharedPageRepository;
 
 	@Override
 	public PageDTO save(PageDTO dto) {
@@ -78,13 +80,76 @@ public class PageServiceImpl implements PageService {
 			);
 		}
 
+		Boolean isSharedPage = sharedPageRepository.existsByPageId(id);
+		if (isSharedPage) {
+			Page page = pageRepository.findById(id)
+					.orElseThrow(() -> new EntityNotFoundException(
+							"Page not found with id: " + id,
+							ErrorCode.PAGE_NOT_FOUND
+					));
+			User user = userRepository.findById(dto.getAuthorId())
+					.orElseThrow(() -> new EntityNotFoundException(
+							"User not found with id: " + dto.getAuthorId(),
+							ErrorCode.USER_NOT_FOUND
+					));
+			SharedPage sharedPage = sharedPageRepository.findByUserAndPage(user, page)
+					.orElseThrow(() -> new EntityNotFoundException(
+							"Current user does not have access to unshared this page",
+							ErrorCode.PAGE_NOT_FOUND
+					));
+
+			if (!sharedPage.getRole().equals(UserRole.OWNER) &&
+					!sharedPage.getRole().equals(UserRole.COLLABORATOR)) {
+				return new PageDTO();
+			}
+		}
+
 		Page page = pageRepository.findById(id)
 				.orElseThrow(() -> new EntityNotFoundException("" +
-						"Page not found with ID = " + id,
+						"Page not found with ID: " + id,
 						ErrorCode.PAGE_NOT_FOUND
 				));
 
 		page.setTitle(dto.getTitle());
+//		page.setBackground(dto.getBackground());
+		page.setUpdatedAt(LocalDate.now());
+
+		return PageDTO.toPageDTO(pageRepository.save(page));
+	}
+
+	@Override
+	public PageDTO updateBackground(Integer id, PageDTO dto) {
+		Boolean isSharedPage = sharedPageRepository.existsByPageId(id);
+		if (isSharedPage) {
+			Page page = pageRepository.findById(id)
+					.orElseThrow(() -> new EntityNotFoundException(
+							"Page not found with id: " + id,
+							ErrorCode.PAGE_NOT_FOUND
+					));
+			User user = userRepository.findById(dto.getAuthorId())
+					.orElseThrow(() -> new EntityNotFoundException(
+							"User not found with id: " + dto.getAuthorId(),
+							ErrorCode.USER_NOT_FOUND
+					));
+			SharedPage sharedPage = sharedPageRepository.findByUserAndPage(user, page)
+					.orElseThrow(() -> new EntityNotFoundException(
+							"Current user does not have access to unshared this page",
+							ErrorCode.PAGE_NOT_FOUND
+					));
+
+			if (!sharedPage.getRole().equals(UserRole.OWNER) &&
+					!sharedPage.getRole().equals(UserRole.COLLABORATOR)) {
+				return new PageDTO();
+			}
+		}
+
+		Page page = pageRepository.findById(id)
+				.orElseThrow(() -> new EntityNotFoundException("" +
+						"Page not found with ID: " + id,
+						ErrorCode.PAGE_NOT_FOUND
+				));
+
+		page.setBackground(dto.getBackground());
 		page.setUpdatedAt(LocalDate.now());
 
 		return PageDTO.toPageDTO(pageRepository.save(page));
@@ -131,6 +196,11 @@ public class PageServiceImpl implements PageService {
 						"Page not found with ID = " + id,
 						ErrorCode.PAGE_NOT_FOUND
 				));
+
+		List<SharedPage> list = sharedPageRepository.findAllByPageId(id);
+		for (SharedPage shared : list) {
+			sharedPageRepository.delete(shared);
+		}
 
 		for (Tag tag : page.getTags()) {
 			tag.getPages().remove(page);

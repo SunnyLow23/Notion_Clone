@@ -22,10 +22,14 @@ spring:
     properties:
       hibernate:
         format_sql: true
-  sql:
-    init:
-      mode: always
-      data-locations: classpath:data.sql
+#  sql:
+#    init:
+#      mode: always
+#      data-locations: classpath:data-manual.sql
   h2:
     console:
       enabled: true
+
+jwt:
+  signerKey: "qAHqeAfczndcPvqu+cGpNMuKYGlWv3spvj2mur6913iSNfReU/Eg55R6KXUPwS4F
+"

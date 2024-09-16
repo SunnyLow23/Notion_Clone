@@ -12,8 +12,7 @@ public class TextBlockDTO extends BlockDTO {
 		final TextBlock block = new TextBlock();
 
 		block.setType(dto.getType());
-		block.setCreatedAt(dto.getCreatedAt());
-		block.setUpdatedAt(dto.getUpdatedAt());
+		block.setPosition(dto.getPosition());
 		block.setContent(dto.getContent());
 
 		return block;
@@ -24,6 +23,7 @@ public class TextBlockDTO extends BlockDTO {
 
 		dto.setId(block.getId());
 		dto.setType(block.getType());
+		dto.setPosition(block.getPosition());
 		dto.setCreatedAt(block.getCreatedAt());
 		dto.setUpdatedAt(block.getUpdatedAt());
 		dto.setPageId(block.getPage().getId());

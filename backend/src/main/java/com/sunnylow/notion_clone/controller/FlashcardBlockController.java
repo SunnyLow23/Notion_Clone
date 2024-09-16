@@ -27,8 +27,18 @@ public class FlashcardBlockController implements FlashcardBlockAPI {
 	}
 
 	@Override
+	public ResponseEntity<FlashcardBlockDTO> updatePosition(Integer id, Integer newPosition) {
+		return new ResponseEntity<>(blockService.updatePosition(id, newPosition), HttpStatus.OK);
+	}
+
+	@Override
 	public ResponseEntity<List<FlashcardBlockDTO>> getAllFlashcards() {
 		return new ResponseEntity<>(blockService.getAll(), HttpStatus.OK);
+	}
+
+	@Override
+	public ResponseEntity<List<FlashcardBlockDTO>> getAllFlashcardsByPageId(Integer pageId) {
+		return new ResponseEntity<>(blockService.getAllByPageId(pageId), HttpStatus.OK);
 	}
 
 	@Override

@@ -27,8 +27,18 @@ public class TableBlockController implements TableBlockAPI {
 	}
 
 	@Override
+	public ResponseEntity<TableBlockDTO> updatePosition(Integer id, Integer newPosition) {
+		return new ResponseEntity<>(blockService.updatePosition(id, newPosition), HttpStatus.OK);
+	}
+
+	@Override
 	public ResponseEntity<List<TableBlockDTO>> getAllTables() {
 		return new ResponseEntity<>(blockService.getAll(), HttpStatus.OK);
+	}
+
+	@Override
+	public ResponseEntity<List<TableBlockDTO>> getAllTablesByPageId(Integer pageId) {
+		return new ResponseEntity<>(blockService.getAllByPageId(pageId), HttpStatus.OK);
 	}
 
 	@Override

@@ -25,6 +25,9 @@ public class UserServiceImpl  implements UserService {
 	@Autowired
 	private UserRepository userRepository;
 
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+
 	@Override
 	public UserDTO save(UserDTO dto) {
 		List<String> errors = UserValidator.validateCreateUser(dto);
@@ -39,8 +42,7 @@ public class UserServiceImpl  implements UserService {
 
 		User user = UserDTO.toUser(dto);
 
-		PasswordEncoder encoder = new BCryptPasswordEncoder(10);
-		user.setPassword(encoder.encode(dto.getPassword()));
+		user.setPassword(passwordEncoder.encode(dto.getPassword()));
 		user.setRole(UserRole.USER);
 
 		return UserDTO.toUserDTO(userRepository.save(user));
@@ -81,6 +83,16 @@ public class UserServiceImpl  implements UserService {
 				.map(UserDTO::toUserDTO)
 				.orElseThrow(() -> new EntityNotFoundException(
 						"User not found with ID = " + id,
+						ErrorCode.USER_NOT_FOUND
+				));
+	}
+
+	@Override
+	public UserDTO getByEmail(String email) {
+		return userRepository.findByEmail(email)
+				.map(UserDTO::toUserDTO)
+				.orElseThrow(() -> new EntityNotFoundException(
+						"User not found with email = " + email,
 						ErrorCode.USER_NOT_FOUND
 				));
 	}

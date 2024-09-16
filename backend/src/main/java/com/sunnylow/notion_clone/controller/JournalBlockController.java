@@ -27,8 +27,18 @@ public class JournalBlockController implements JournalBlockAPI {
 	}
 
 	@Override
+	public ResponseEntity<JournalBlockDTO> updatePosition(Integer id, Integer newPosition) {
+		return new ResponseEntity<>(blockService.updatePosition(id, newPosition), HttpStatus.OK);
+	}
+
+	@Override
 	public ResponseEntity<List<JournalBlockDTO>> getAllJournals() {
 		return new ResponseEntity<>(blockService.getAll(), HttpStatus.OK);
+	}
+
+	@Override
+	public ResponseEntity<List<JournalBlockDTO>> getAllJournalsByPageId(Integer pageId) {
+		return new ResponseEntity<>(blockService.getAllByPageId(pageId), HttpStatus.OK);
 	}
 
 	@Override

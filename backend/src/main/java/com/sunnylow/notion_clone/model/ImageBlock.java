@@ -5,7 +5,7 @@ import jakarta.persistence.Entity;
 import lombok.Data;
 
 @Entity
-@DiscriminatorValue("IMAGE")
+@DiscriminatorValue("image")
 @Data
 public class ImageBlock extends Block {
 

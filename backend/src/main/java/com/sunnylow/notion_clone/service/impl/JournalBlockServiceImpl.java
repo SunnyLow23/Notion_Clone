@@ -67,6 +67,20 @@ public class JournalBlockServiceImpl implements BlockService<JournalBlockDTO> {
 	}
 
 	@Override
+	public JournalBlockDTO updatePosition(Integer id, Integer newPosition) {
+		JournalBlock journalBlock = journalRepository.findById(id)
+				.orElseThrow(() -> new EntityNotFoundException(
+						"Journal Block not found with ID = " + id,
+						ErrorCode.JOURNAL_NOT_FOUND
+				));
+
+		journalBlock.setUpdatedAt(LocalDate.now());
+		journalBlock.setPosition(newPosition);
+
+		return JournalBlockDTO.toJournalBlockDTO(journalRepository.save(journalBlock));
+	}
+
+	@Override
 	public List<JournalBlockDTO> getAll() {
 		return journalRepository.findAll().stream()
 				.map(JournalBlockDTO::toJournalBlockDTO).collect(Collectors.toList());
@@ -80,6 +94,12 @@ public class JournalBlockServiceImpl implements BlockService<JournalBlockDTO> {
 						"Journal Block not found with ID = " + id,
 						ErrorCode.JOURNAL_NOT_FOUND
 				));
+	}
+
+	@Override
+	public List<JournalBlockDTO> getAllByPageId(Integer pageId) {
+		return journalRepository.findJournalBlocksByPageId(pageId).stream()
+				.map(JournalBlockDTO::toJournalBlockDTO).collect(Collectors.toList());
 	}
 
 	@Override

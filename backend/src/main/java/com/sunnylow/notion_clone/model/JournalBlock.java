@@ -7,7 +7,7 @@ import lombok.Data;
 import java.time.LocalDate;
 
 @Entity
-@DiscriminatorValue("JOURNAL")
+@DiscriminatorValue("journal")
 @Data
 public class JournalBlock extends Block {
 

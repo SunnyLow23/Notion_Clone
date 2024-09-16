@@ -66,6 +66,20 @@ public class TextBlockServiceImpl implements BlockService<TextBlockDTO> {
 	}
 
 	@Override
+	public TextBlockDTO updatePosition(Integer id, Integer newPosition) {
+		TextBlock textBlock = textRepository.findById(id)
+				.orElseThrow(() -> new EntityNotFoundException(
+						"Text Block not found with ID = " + id,
+						ErrorCode.TEXT_NOT_FOUND
+				));
+
+		textBlock.setUpdatedAt(LocalDate.now());
+		textBlock.setPosition(newPosition);
+
+		return TextBlockDTO.toTextBlockDTO(textRepository.save(textBlock));
+	}
+
+	@Override
 	public List<TextBlockDTO> getAll() {
 		return textRepository.findAll().stream()
 				.map(TextBlockDTO::toTextBlockDTO).collect(Collectors.toList());
@@ -79,6 +93,12 @@ public class TextBlockServiceImpl implements BlockService<TextBlockDTO> {
 						"Text Block not found with ID = " + id,
 						ErrorCode.TEXT_NOT_FOUND
 				));
+	}
+
+	@Override
+	public List<TextBlockDTO> getAllByPageId(Integer pageId) {
+		return textRepository.findTextBlocksByPageId(pageId).stream()
+				.map(TextBlockDTO::toTextBlockDTO).collect(Collectors.toList());
 	}
 
 	@Override

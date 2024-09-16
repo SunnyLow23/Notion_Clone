@@ -15,8 +15,7 @@ public class JournalBlockDTO extends BlockDTO {
 		final JournalBlock block = new JournalBlock();
 
 		block.setType(dto.getType());
-		block.setCreatedAt(dto.getCreatedAt());
-		block.setUpdatedAt(dto.getUpdatedAt());
+		block.setPosition(dto.getPosition());
 		block.setJournalDate(dto.getJournalDate());
 		block.setContent(dto.getContent());
 
@@ -28,6 +27,7 @@ public class JournalBlockDTO extends BlockDTO {
 
 		dto.setId(block.getId());
 		dto.setType(block.getType());
+		dto.setPosition(block.getPosition());
 		dto.setCreatedAt(block.getCreatedAt());
 		dto.setUpdatedAt(block.getUpdatedAt());
 		dto.setPageId(block.getPage().getId());

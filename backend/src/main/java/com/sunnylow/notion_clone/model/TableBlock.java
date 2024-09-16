@@ -6,7 +6,7 @@ import jakarta.persistence.Entity;
 import lombok.Data;
 
 @Entity
-@DiscriminatorValue("TABLE")
+@DiscriminatorValue("table")
 @Data
 public class TableBlock extends Block {
 

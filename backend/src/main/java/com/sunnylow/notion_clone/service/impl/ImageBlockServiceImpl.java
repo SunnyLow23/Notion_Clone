@@ -67,6 +67,20 @@ public class ImageBlockServiceImpl implements BlockService<ImageBlockDTO> {
 	}
 
 	@Override
+	public ImageBlockDTO updatePosition(Integer id, Integer newPosition) {
+		ImageBlock imageBlock = imageRepository.findById(id)
+				.orElseThrow(() -> new EntityNotFoundException(
+						"Image Block not found with ID = " + id,
+						ErrorCode.IMAGE_NOT_FOUND
+				));
+
+		imageBlock.setUpdatedAt(LocalDate.now());
+		imageBlock.setPosition(newPosition);
+
+		return ImageBlockDTO.toImageBlockDTO(imageRepository.save(imageBlock));
+	}
+
+	@Override
 	public List<ImageBlockDTO> getAll() {
 		return imageRepository.findAll().stream()
 				.map(ImageBlockDTO::toImageBlockDTO).collect(Collectors.toList());
@@ -80,6 +94,12 @@ public class ImageBlockServiceImpl implements BlockService<ImageBlockDTO> {
 						"Image Block not found with ID = " + id,
 						ErrorCode.IMAGE_NOT_FOUND
 				));
+	}
+
+	@Override
+	public List<ImageBlockDTO> getAllByPageId(Integer pageId) {
+		return imageRepository.findImageBlocksByPageId(pageId).stream()
+				.map(ImageBlockDTO::toImageBlockDTO).collect(Collectors.toList());
 	}
 
 	@Override

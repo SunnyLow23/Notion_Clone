@@ -14,5 +14,7 @@ public interface UserService {
 
 	UserDTO getById(Integer id);
 
+	UserDTO getByEmail(String email);
+
 	void delete(Integer id);
 }

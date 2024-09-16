@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Tag(name = "TodoBlock", description = "TodoBlock management APIs")
-@RequestMapping("/api/blocks")
+@RequestMapping("/api")
 public interface TodoBlockAPI {
 
 	@PostMapping(
@@ -51,6 +51,24 @@ public interface TodoBlockAPI {
 			@RequestBody TodoBlockDTO dto
 	);
 
+	@PatchMapping(
+			value = "/todos/{id}/position",
+			produces = MediaType.APPLICATION_JSON_VALUE
+	)
+	@Operation(
+			summary = "Update block position",
+			description = "Update block position"
+	)
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "text updated successfully"),
+			@ApiResponse(responseCode = "1001", description = "text not found"),
+			@ApiResponse(responseCode = "2001", description = "text not valid"),
+	})
+	ResponseEntity<TodoBlockDTO> updatePosition(
+			@PathVariable("id") Integer id,
+			@RequestParam Integer newPosition
+	);
+
 	@GetMapping(
 			value = "/todos",
 			produces = MediaType.APPLICATION_JSON_VALUE
@@ -63,6 +81,21 @@ public interface TodoBlockAPI {
 			@ApiResponse(responseCode = "200", description = "todos retrieved successfully"),
 	})
 	ResponseEntity<List<TodoBlockDTO>> getAllTodos();
+
+	@GetMapping(
+			value = "/pages/{id}/todos",
+			produces = MediaType.APPLICATION_JSON_VALUE
+	)
+	@Operation(
+			summary = "Get all texts by page id",
+			description = "Retrieve all texts by a specific page id"
+	)
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "texts retrieved successfully"),
+	})
+	ResponseEntity<List<TodoBlockDTO>> getAllTodosByPageId(
+			@PathVariable("id") Integer pageId
+	);
 
 	@GetMapping(
 			value = "/todos/{id}",

@@ -27,8 +27,18 @@ public class ImageBlockController implements ImageBlockAPI {
 	}
 
 	@Override
+	public ResponseEntity<ImageBlockDTO> updatePosition(Integer id, Integer newPosition) {
+		return new ResponseEntity<>(blockService.updatePosition(id, newPosition), HttpStatus.OK);
+	}
+
+	@Override
 	public ResponseEntity<List<ImageBlockDTO>> getAllImages() {
 		return new ResponseEntity<>(blockService.getAll(), HttpStatus.OK);
+	}
+
+	@Override
+	public ResponseEntity<List<ImageBlockDTO>> getAllImagesByPageId(Integer pageId) {
+		return new ResponseEntity<>(blockService.getAllByPageId(pageId), HttpStatus.OK);
 	}
 
 	@Override

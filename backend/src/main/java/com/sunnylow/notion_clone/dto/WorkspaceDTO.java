@@ -14,7 +14,9 @@ public class WorkspaceDTO {
 	private String name;
 	private LocalDate createdAt;
 	private LocalDate updatedAt;
+	private boolean editable;
 	private Integer userId;
+
 
 	public static Workspace toWorkspace(WorkspaceDTO dto) {
 		final Workspace workspace = new Workspace();
@@ -32,6 +34,7 @@ public class WorkspaceDTO {
 				.name(workspace.getName())
 				.createdAt(workspace.getCreatedAt())
 				.updatedAt(workspace.getUpdatedAt())
+				.editable(workspace.isEditable())
 				.userId(workspace.getUser().getId())
 				.build();
 	}

@@ -50,6 +50,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 		workspace.setUser(user);
 		workspace.setCreatedAt(LocalDate.now());
 		workspace.setUpdatedAt(LocalDate.now());
+		workspace.setEditable(true);
 
 		return WorkspaceDTO.toWorkspaceDTO(workspaceRepository.save(workspace));
 	}
@@ -71,6 +72,14 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 						"Workspace not found with ID = " + id,
 						ErrorCode.WORKSPACE_NOT_FOUND
 				));
+
+		if (!workspace.isEditable()) {
+			throw new InvalidEntityException(
+					"Workspace is not valid",
+					ErrorCode.WORKSPACE_NOT_VALID,
+					errors
+			);
+		}
 
 		workspace.setName(dto.getName());
 		workspace.setUpdatedAt(LocalDate.now());

@@ -67,6 +67,20 @@ public class FlashcardBlockServiceImpl implements BlockService<FlashcardBlockDTO
 	}
 
 	@Override
+	public FlashcardBlockDTO updatePosition(Integer id, Integer newPosition) {
+		FlashcardBlock flashcardBlock = flashcardRepository.findById(id)
+				.orElseThrow(() -> new EntityNotFoundException(
+						"Flashcard Block not found with ID = " + id,
+						ErrorCode.FLASHCARD_NOT_FOUND
+				));
+
+		flashcardBlock.setUpdatedAt(LocalDate.now());
+		flashcardBlock.setPosition(newPosition);
+
+		return FlashcardBlockDTO.toFlashcardBlockDTO(flashcardRepository.save(flashcardBlock));
+	}
+
+	@Override
 	public List<FlashcardBlockDTO> getAll() {
 		return flashcardRepository.findAll().stream()
 				.map(FlashcardBlockDTO::toFlashcardBlockDTO).collect(Collectors.toList());
@@ -80,6 +94,12 @@ public class FlashcardBlockServiceImpl implements BlockService<FlashcardBlockDTO
 						"Flashcard Block not found with ID = " + id,
 						ErrorCode.FLASHCARD_NOT_FOUND
 				));
+	}
+
+	@Override
+	public List<FlashcardBlockDTO> getAllByPageId(Integer pageId) {
+		return flashcardRepository.findFlashcardBlocksByPageId(pageId).stream()
+				.map(FlashcardBlockDTO::toFlashcardBlockDTO).collect(Collectors.toList());
 	}
 
 	@Override
